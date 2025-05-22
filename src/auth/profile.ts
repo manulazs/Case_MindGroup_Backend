@@ -27,12 +27,16 @@ router.get('/profile', authenticateToken, (req: Request, res: Response) => {
 
 // PUT /profile — Atualizar perfil
 router.put('/profile', authenticateToken, (req: Request, res: Response) => {
-  const { name, surname, email, avatar } = req.body;
+  let { name, surname, email, avatar } = req.body;
   const user = (req as any).user;
 
-  if (!name || !surname || !email || !avatar) {
-    res.status(400).json({ message: 'Todos os campos são obrigatórios' });
+  if (!name || !surname || !email) {
+    res.status(400).json({ message: 'Campos obrigatórios faltando' });
     return;
+  }
+
+  if (!avatar || avatar.trim() === '') {
+    avatar = '/default-avatar.png';
   }
 
   db.query(
@@ -44,7 +48,6 @@ router.put('/profile', authenticateToken, (req: Request, res: Response) => {
         return res.status(500).json({ message: 'Erro no servidor ao atualizar' });
       }
 
-      // Opcional: buscar novamente os dados atualizados
       db.query(
         'SELECT id, name, surname, email, avatar FROM users WHERE id = ?', 
         [user.id], 
