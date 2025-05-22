@@ -8,6 +8,7 @@ import loginRouter from './auth/login';
 import profileRouter from './auth/profile';
 import newPassRouter from './auth/newPass';
 import articleCreateRouter from './articles/create';
+import articleListRouter from './articles/list';
 
 dotenv.config();
 
@@ -22,6 +23,8 @@ app.use('/auth', loginRouter);
 app.use('/auth', profileRouter);
 
 app.use('/auth', newPassRouter);
+
+app.use('/', articleListRouter);
 
 app.get('/', (req, res) => {
   res.send('API funcionando!');
