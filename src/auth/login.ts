@@ -50,3 +50,14 @@ router.post('/login', (req: Request, res: Response) => {
 });
 
 export default router;
+
+// O código acima define uma rota POST /login que autentica um usuário com base no email e senha fornecidos.
+// Ele verifica se o email e a senha estão presentes no corpo da requisição.
+// Se não estiverem, retorna um erro 400 (solicitação inválida).
+// Em seguida, ele consulta o banco de dados para encontrar o usuário com o email fornecido.
+// Se o usuário não for encontrado, retorna um erro 400 (email ou senha inválidos).
+// Se o usuário for encontrado, ele compara a senha fornecida com a senha armazenada no banco de dados usando bcrypt.
+// Se a senha não corresponder, retorna um erro 400 (email ou senha inválidos).
+// Se a senha corresponder, ele gera um token JWT usando a chave secreta definida em .env e retorna o token na resposta.
+// O token contém o id e o email do usuário e tem um tempo de expiração de 1 hora.
+
