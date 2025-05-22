@@ -5,6 +5,7 @@ import bcrypt from 'bcrypt';
 import { db } from './db';
 import { Request, Response } from 'express';
 import loginRouter from './auth/login';
+import profileRouter from './auth/profile';
 
 dotenv.config();
 
@@ -13,6 +14,8 @@ app.use(cors());
 app.use(express.json());
 
 app.use('/auth', loginRouter);
+
+app.use('/auth', profileRouter);
 
 app.get('/', (req, res) => {
   res.send('API funcionando!');
