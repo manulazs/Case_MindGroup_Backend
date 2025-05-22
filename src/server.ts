@@ -6,6 +6,7 @@ import { db } from './db';
 import { Request, Response } from 'express';
 import loginRouter from './auth/login';
 import profileRouter from './auth/profile';
+import newPassRouter from './auth/newPass';
 
 dotenv.config();
 
@@ -16,6 +17,8 @@ app.use(express.json());
 app.use('/auth', loginRouter);
 
 app.use('/auth', profileRouter);
+
+app.use('/auth', newPassRouter);
 
 app.get('/', (req, res) => {
   res.send('API funcionando!');
