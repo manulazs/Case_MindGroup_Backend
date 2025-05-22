@@ -3,6 +3,8 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import bcrypt from 'bcrypt';
 import { db } from './db';
+import { Request, Response } from 'express';
+
 
 dotenv.config();
 
@@ -16,23 +18,29 @@ app.get('/', (req, res) => {
 });
 
 // Rota de registro
-app.post('/auth/register', (req, res) => {
+app.post('/auth/register', (req: Request, res: Response) => {
   const { name, surname, email, password } = req.body;
 
   if (!name || !surname || !email || !password) {
-    return res.status(400).json({ message: 'Todos os campos são obrigatórios' });
+    res.status(400).json({ message: 'Todos os campos são obrigatórios' });
+    return; 
   }
 
   // Verifica se usuário já existe
-  db.query('SELECT * FROM users WHERE email = ?', [email], (err, results) => {
-    if (err) {
-      console.error('Erro ao consultar:', err);
-      return res.status(500).json({ message: 'Erro no servidor' });
-    }
+db.query('SELECT * FROM users WHERE email = ?', [email], (err, results: any) => {
+  if (err) {
+    console.error(err);
+    return res.status(500).json({ message: 'Erro no servidor' });
+  }
 
     if (results.length > 0) {
       return res.status(400).json({ message: 'Email já cadastrado' });
     }
+
+
+    
+});
+
 
     // Criptografa senha
     bcrypt.hash(password, 10, (err, hashedPassword) => {
@@ -56,7 +64,7 @@ app.post('/auth/register', (req, res) => {
       );
     });
   });
-});
+
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
