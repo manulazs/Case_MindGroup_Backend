@@ -7,12 +7,15 @@ import { Request, Response } from 'express';
 import loginRouter from './auth/login';
 import profileRouter from './auth/profile';
 import newPassRouter from './auth/newPass';
+import articleCreateRouter from './articles/create';
 
 dotenv.config();
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+app.use('/', articleCreateRouter);
 
 app.use('/auth', loginRouter);
 
