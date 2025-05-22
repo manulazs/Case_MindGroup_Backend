@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 import bcrypt from 'bcrypt';
 import { db } from './db';
 import { Request, Response } from 'express';
-
+import loginRouter from './auth/login';
 
 dotenv.config();
 
@@ -12,12 +12,12 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Rota de teste
+app.use('/auth', loginRouter);
+
 app.get('/', (req, res) => {
   res.send('API funcionando!');
 });
 
-// Rota de registro
 app.post('/auth/register', (req: Request, res: Response) => {
   const { name, surname, email, password } = req.body;
 
@@ -26,30 +26,22 @@ app.post('/auth/register', (req: Request, res: Response) => {
     return; 
   }
 
-  // Verifica se usuário já existe
-db.query('SELECT * FROM users WHERE email = ?', [email], (err, results: any) => {
-  if (err) {
-    console.error(err);
-    return res.status(500).json({ message: 'Erro no servidor' });
-  }
+  db.query('SELECT * FROM users WHERE email = ?', [email], (err, results: any) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ message: 'Erro no servidor' });
+    }
 
     if (results.length > 0) {
       return res.status(400).json({ message: 'Email já cadastrado' });
     }
 
-
-    
-});
-
-
-    // Criptografa senha
     bcrypt.hash(password, 10, (err, hashedPassword) => {
       if (err) {
         console.error('Erro ao criptografar:', err);
         return res.status(500).json({ message: 'Erro ao criptografar senha' });
       }
 
-      // Insere usuário
       db.query(
         'INSERT INTO users (name, surname, email, password) VALUES (?, ?, ?, ?)',
         [name, surname, email, hashedPassword],
@@ -64,7 +56,7 @@ db.query('SELECT * FROM users WHERE email = ?', [email], (err, results: any) => 
       );
     });
   });
-
+});
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
