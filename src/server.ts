@@ -62,3 +62,10 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
 });
+
+// O código acima define um servidor Express que escuta na porta especificada (ou 3000 por padrão).
+// Ele utiliza o middleware cors para permitir requisições de diferentes origens e express.json() para analisar o corpo das requisições em JSON.
+// O servidor possui uma rota GET na raiz (/) que retorna uma mensagem de sucesso e uma rota POST em /auth/register para registrar novos usuários.
+// A rota de registro verifica se todos os campos obrigatórios estão presentes, se o email já está cadastrado e, em seguida, criptografa a senha usando bcrypt antes de armazenar os dados no banco de dados MySQL.
+// Se o registro for bem-sucedido, retorna uma mensagem de sucesso; caso contrário, retorna mensagens de erro apropriadas.
+// O servidor também importa e utiliza o módulo de login (loginRouter) para gerenciar autenticação e login de usuários.

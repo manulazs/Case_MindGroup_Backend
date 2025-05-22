@@ -17,3 +17,7 @@ db.connect((err) => {
   }
   console.log('Conectado ao MySQL!');
 });
+// O código acima configura a conexão com o banco de dados MySQL usando as variáveis de ambiente definidas no arquivo .env.
+// Ele utiliza o pacote mysql2 para criar a conexão e exporta a instância da conexão para ser utilizada em outras partes do aplicativo.
+// A conexão é estabelecida assim que o módulo é carregado, e uma mensagem de sucesso ou erro é exibida no console.
+// O banco de dados é acessado através da variável db exportada, que pode ser utilizada para executar consultas SQL.
