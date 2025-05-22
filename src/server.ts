@@ -9,6 +9,7 @@ import profileRouter from './auth/profile';
 import newPassRouter from './auth/newPass';
 import articleCreateRouter from './articles/create';
 import articleListRouter from './articles/list';
+import articleLikeRouter from './articles/like';
 
 dotenv.config();
 
@@ -17,6 +18,8 @@ app.use(cors());
 app.use(express.json());
 
 app.use('/', articleCreateRouter);
+
+app.use('/', articleLikeRouter);
 
 app.use('/auth', loginRouter);
 
