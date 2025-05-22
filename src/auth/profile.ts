@@ -4,24 +4,30 @@ import { db } from '../db';
 
 const router = express.Router();
 
+// GET /profile — Buscar perfil completo
 router.get('/profile', authenticateToken, (req: Request, res: Response) => {
-  const user = (req as any).user; // contém id e email do token
-  res.json({ user });
-});
-
-router.put('/profile', authenticateToken, (req: Request, res: Response) => {
-  const { name, surname, email } = req.body;
   const user = (req as any).user;
 
-  db.query('UPDATE users SET name = ?, surname = ?, email = ? WHERE id = ?', 
-    [name, surname, email, user.id], (err) => {
+  db.query('SELECT id, name, surname, email, avatar FROM users WHERE id = ?', [user.id], (err, results: any) => {
+    if (err) return res.status(500).json({ message: 'Erro no servidor' });
+    if (!results || results.length === 0) return res.status(404).json({ message: 'Usuário não encontrado' });
+
+    res.json({ user: results[0] });
+  });
+});
+
+// PUT /profile — Atualizar perfil
+router.put('/profile', authenticateToken, (req: Request, res: Response) => {
+  const { name, surname, email, avatar } = req.body;
+  const user = (req as any).user;
+
+  db.query(
+    'UPDATE users SET name = ?, surname = ?, email = ?, avatar = ? WHERE id = ?', 
+    [name, surname, email, avatar, user.id], 
+    (err) => {
       if (err) return res.status(500).json({ message: 'Erro no servidor' });
       res.json({ message: 'Perfil atualizado!' });
   });
 });
 
-
 export default router;
-// O código acima define uma rota GET /profile que retorna as informações do usuário autenticado.
-// Ele utiliza o middleware authenticateToken para verificar se o token JWT é válido.
-// Se o token for válido, ele retorna as informações do usuário; caso contrário, retorna um erro 401 (não autorizado).
