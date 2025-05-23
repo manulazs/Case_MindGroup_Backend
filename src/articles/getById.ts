@@ -6,7 +6,14 @@ const router = express.Router();
 router.get('/articles/:id', (req: Request, res: Response) => {
   const { id } = req.params;
 
-  db.query('SELECT * FROM articles WHERE id = ?', [id], (err, results: any[]) => {
+  const sql = `
+    SELECT articles.*, users.name AS author_name
+    FROM articles
+    JOIN users ON articles.user_id = users.id
+    WHERE articles.id = ?
+  `;
+
+  db.query(sql, [id], (err, results: any[]) => {
     if (err) {
       console.error('Erro ao buscar artigo:', err);
       return res.status(500).json({ message: 'Erro no servidor' });
