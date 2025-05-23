@@ -6,19 +6,48 @@ const router = express.Router();
 
 router.patch('/articles/:id/like', authenticateToken, (req: Request, res: Response) => {
   const { id } = req.params;
+  const user = (req as any).user;
 
-  db.query('UPDATE articles SET likes = likes + 1 WHERE id = ?', [id], (err) => {
-    if (err) {
-      console.error('Erro ao dar like:', err);
-      return res.status(500).json({ message: 'Erro no servidor' });
+  // Verifica se já curtiu
+  db.query(
+    'SELECT * FROM likes WHERE user_id = ? AND article_id = ?',
+    [user.id, id],
+    (err, results: any[]) => {
+      if (err) {
+        console.error('Erro ao verificar like:', err);
+        return res.status(500).json({ message: 'Erro no servidor' });
+      }
+
+      if (results.length > 0) {
+        return res.status(400).json({ message: 'Você já curtiu este artigo.' });
+      }
+
+      // Não curtiu ainda → registra like
+      db.query(
+        'INSERT INTO likes (user_id, article_id) VALUES (?, ?)',
+        [user.id, id],
+        (err) => {
+          if (err) {
+            console.error('Erro ao registrar like:', err);
+            return res.status(500).json({ message: 'Erro no servidor' });
+          }
+
+          // Incrementa o contador na tabela de artigos
+          db.query(
+            'UPDATE articles SET likes = likes + 1 WHERE id = ?',
+            [id],
+            (err) => {
+              if (err) {
+                console.error('Erro ao atualizar likes:', err);
+                return res.status(500).json({ message: 'Erro no servidor' });
+              }
+              res.json({ message: 'Like registrado com sucesso!' });
+            }
+          );
+        }
+      );
     }
-    res.json({ message: 'Like adicionado!' });
-  });
+  );
 });
 
 export default router;
-// // O código acima define uma rota PATCH /articles/:id/like que permite adicionar um "like" a um artigo específico.
-// // Ele utiliza o middleware authenticateToken para verificar se o token JWT é válido.
-// // Se o token for válido, ele atualiza o número de "likes" do artigo com o ID fornecido na URL.
-// // Se a atualização for bem-sucedida, retorna uma mensagem de sucesso; caso contrário, retorna um erro 500 (erro no servidor).
-// // O código utiliza o db.query para executar consultas SQL no banco de dados MySQL, permitindo a atualização do número de "likes" do artigo.
