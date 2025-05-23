@@ -11,6 +11,8 @@ import articleCreateRouter from './articles/create';
 import articleListRouter from './articles/list';
 import articleLikeRouter from './articles/like';
 import articleByIdRouter from './articles/getById';
+import articleEditRouter from './articles/editArticle';
+import likeToggleRouter from './articles/likeToggle';
 
 dotenv.config();
 
@@ -19,6 +21,8 @@ app.use(cors());
 app.use(express.json());
 
 app.use('/', articleCreateRouter);
+
+app.use('/', likeToggleRouter);
 
 app.use('/', articleLikeRouter);
 
@@ -31,6 +35,8 @@ app.use('/auth', newPassRouter);
 app.use('/', articleListRouter);
 
 app.use('/', articleByIdRouter);
+
+app.use('/', articleEditRouter);
 
 app.get('/', (req, res) => {
   res.send('API funcionando!');

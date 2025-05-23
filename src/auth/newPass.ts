@@ -9,7 +9,7 @@ router.post('/newpass', (req: Request, res: Response) => {
 
   if (!newPassword || !email) {
     res.status(400).json({ message: 'Nova senha e email são obrigatórios' });
-    return  
+    return 
   }
 
   bcrypt.hash(newPassword, 10, (err, hashedPassword) => {
@@ -23,10 +23,10 @@ router.post('/newpass', (req: Request, res: Response) => {
         console.error('Erro ao atualizar senha:', err);
         return res.status(500).json({ message: 'Erro no servidor ao atualizar senha' });
       }
-      if (result && result.affectedRows === 0) {
+      if (result.affectedRows === 0) {
         return res.status(404).json({ message: 'Usuário não encontrado' });
       }
-      res.status(200).json({ message: 'Senha atualizada com sucesso!' });
+      return res.status(200).json({ message: 'Senha atualizada com sucesso!' });
     });
   });
 });
